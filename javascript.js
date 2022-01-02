@@ -4,8 +4,8 @@ let yScale;
 let vgData;
 let treemap;
 
-const w = 1000;
-const h = 800;
+const w = 1100;
+const h = 1000;
 
 const testArr = ['Wii', 'GB', 'Playstation', 'N64', 'Wii U', 'J'];
 
@@ -46,15 +46,20 @@ const generateSvg = () => {
                    .data(vgLeaves)
                    .enter()
                    .append('g')
-                   .attr('transform', (d) => `translate(${d.x0}, ${d.y0})`)
-                   .append('rect')
-                   .attr('class','tile')
-                   .attr('fill', (d) => tileFiller(d.data.category))
-                   .attr('data-name', (d) => d.data.name)
-                   .attr('data-category', (d) => d.data.category)
-                   .attr('data-value', (d) => d.data.value)
-                   .attr('width', (d) => d.x1 - d.x0)
-                   .attr('height', (d) => d.y1 - d.y0)
+                   .attr('transform', (d) => `translate(${d.x0}, ${d.y0})`);
+                   
+    let rectCells = cells.append('rect')
+                         .attr('class','tile')
+                         .attr('fill', (d) => tileFiller(d.data.category))
+                         .attr('data-name', (d) => d.data.name)
+                         .attr('data-category', (d) => d.data.category)
+                         .attr('data-value', (d) => d.data.value)
+                         .attr('width', (d) => d.x1 - d.x0)
+                         .attr('height', (d) => d.y1 - d.y0);
+    
+    const textCells = cells.append('text').text((d) => d.data.name).attr('x', '5').attr('y', '20').attr('class', 'small-font');
+
+    
 }
 
 const tileFiller = (name) => {
@@ -68,9 +73,9 @@ const tileFiller = (name) => {
         case 'PSP':
             return '#A52A2A';
         case 'XB':
-            return '#7FFFD4';
+            return 'teal';
         case 'PS':
-            return '#DEB8887';
+            return '#DEB887';
         case 'N64':
             return '#8B008B';
         case '3DS':
@@ -93,5 +98,7 @@ const tileFiller = (name) => {
             return '#708090';
         case '2600':
             return '#4682B4';
+        case 'PC':
+            return 'gray'
     }
 }
