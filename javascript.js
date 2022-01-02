@@ -5,7 +5,7 @@ let vgData;
 let treemap;
 
 const w = 1000;
-const h = 700;
+const h = 800;
 
 const testArr = ['Wii', 'GB', 'Playstation', 'N64', 'Wii U', 'J'];
 
@@ -53,7 +53,8 @@ const generateSvg = () => {
                    .attr('data-name', (d) => d.data.name)
                    .attr('data-category', (d) => d.data.category)
                    .attr('data-value', (d) => d.data.value)
-                   .attr('datapoint', (d) => console.log(d))
+                   .attr('width', (d) => d.x1 - d.x0)
+                   .attr('height', (d) => d.y1 - d.y0)
 }
 
 const tileFiller = (name) => {
