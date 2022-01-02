@@ -1,27 +1,21 @@
+$(document).mousemove(function(event) {
+    $('#tooltip').css('left', event.clientX + 'px').css('top', event.clientY + 'px')
+})
+
 let svg;
-let xScale;
+let legendSvg;
 let yScale;
 let vgData;
 let treemap;
+let bandScale = ['Wii', 'X360', 'XOne', 'PSP', 'XB', 'PS', 'N64', '3DS', 'PS4', 'GBA', 'SNES', 'PS2', 'PS3', 'DS', 'GB', 'NES', '2600', 'PC']
 
 const w = 1100;
 const h = 1000;
-
-const testArr = ['Wii', 'GB', 'Playstation', 'N64', 'Wii U', 'J'];
-
-const sortedArr = testArr.sort((a, b) => {
-    if (a < b) {
-        return -1
-    } else {
-        return 1
-    }
-})
 
 fetch('https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json')
     .then(response => response.json())
     .then(response => {
         vgData = response;
-        console.log(response);
         generateSvg();
     })
 
@@ -55,10 +49,35 @@ const generateSvg = () => {
                          .attr('data-category', (d) => d.data.category)
                          .attr('data-value', (d) => d.data.value)
                          .attr('width', (d) => d.x1 - d.x0)
-                         .attr('height', (d) => d.y1 - d.y0);
+                         .attr('height', (d) => d.y1 - d.y0)
+                         .on('mouseover', (event) => tooltip.style('opacity', '0.8').attr('data-value', event.currentTarget.dataset.value).html(`${event.currentTarget.dataset.name} <br> ${event.currentTarget.dataset.category} <br> <b>Value:</b> ${event.currentTarget.dataset.value}`))
+                         .on('mouseout', () => tooltip.style('opacity', '0'));
     
     const textCells = cells.append('text').text((d) => d.data.name).attr('x', '5').attr('y', '20').attr('class', 'small-font');
 
+    legendSvg = d3.select('#legend')
+                  .append('svg')
+                  .attr('width', 200)
+                  .attr('height', 700);
+
+    let yScale = d3.scaleBand().domain(bandScale).range([180, 680]);
+
+    const legendY = d3.axisLeft(yScale);
+
+    legendSvg.append('g').attr('transform', `translate(75, -150)`).call(legendY);
+
+    legendSvg.selectAll('rect')
+             .data(bandScale)
+             .enter()
+             .append('rect')
+             .attr('width', 20)
+             .attr('height', 20)
+             .attr('fill', (d) => tileFiller(d))
+             .attr('y',(d) => yScale(d) - 150)
+             .attr('x', 85)
+             .attr('class', 'legend-item');
+
+     const tooltip = d3.select('#canvas-div').append('div').attr('id', 'tooltip').style('position', 'absolute');
     
 }
 
